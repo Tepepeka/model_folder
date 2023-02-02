@@ -42,7 +42,7 @@ class Scrapper
         File.open("db/emails.json","w") do |f|
             f.write(array.to_json)
         end
-        puts "Save as json!"
+        puts "Saved as json!"
     end
 
 
@@ -52,13 +52,22 @@ class Scrapper
               csv << [hash.keys.first, hash.values.first]
             end
         end
-          puts "Save as csv"
+          puts "Saved as csv!"
     end
 
     
-    def save_as_spreadsheet
+    def save_as_spreadsheet(array)
         session = GoogleDrive::Session.from_config("config.json")
-
+        spreadsheet = session.create_spreadsheet(title = "emails")
+        ws = spreadsheet.worksheets[0]
+        ws[1, 1] = "City"
+        ws[1, 2] = "Email"
+        array.each_with_index do |pair, line|
+            ws[line + 2, 1] = pair.keys[0]
+            ws[line + 2, 2] = pair.values[0]
+        end
+        ws.save
+        puts "Saved to google drive!"
     end
 
 
@@ -69,7 +78,7 @@ class Scrapper
         cities_email_array = hash_into_array(arr1,arr2)
         save_as_json(cities_email_array)
         save_as_csv(cities_email_array)
-        #save_as_spreadsheet
+        save_as_spreadsheet(cities_email_array)
     end
 
     
