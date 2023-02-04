@@ -47,7 +47,7 @@ class Scrapper
 
 
     def save_as_csv(array)
-        CSV.open("db/emails.csv", "wb") do |csv|
+        CSV.open("db/emails.csv", "w") do |csv|
             array.each do |hash|
               csv << [hash.keys.first, hash.values.first]
             end
